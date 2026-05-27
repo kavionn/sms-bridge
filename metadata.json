@@ -1,0 +1,6 @@
+{
+  "name": "SMS Bridge",
+  "description": "An Android native SMS synchronization client that reads incoming SMS and securely forwards them to a pairing backend.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

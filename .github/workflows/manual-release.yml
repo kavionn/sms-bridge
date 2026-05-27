@@ -1,0 +1,152 @@
+name: Manual Android APK Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Version name (e.g. 1.0.0)'
+        required: true
+        default: '1.0.0'
+      version_code:
+        description: 'Version code integer (leave blank to auto use run number)'
+        required: false
+        default: ''
+      release_title:
+        description: 'Release Title'
+        required: false
+        default: 'Release'
+      release_notes:
+        description: 'Release Notes / Description (used when auto_release_notes=false)'
+        required: false
+        default: ''
+      auto_release_notes:
+        description: 'Generate release notes automatically from commits/PRs'
+        type: boolean
+        required: false
+        default: true
+      draft:
+        description: 'Create as Draft'
+        type: boolean
+        required: false
+        default: false
+      prerelease:
+        description: 'Mark as Pre-release'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          validate-wrappers: false
+
+      - name: Prepare gradle.properties for CI
+        run: |
+          echo "Disabling in-process compiler strategy to allow KSP to run via Kotlin Compile Daemon..."
+          sed -i '/kotlin.compiler.execution.strategy/d' gradle.properties
+
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Decoding Keystore..."
+            echo "$KEYSTORE_BASE64" | base64 --decode > my-upload-key.jks
+          else
+            echo "KEYSTORE_BASE64 is empty. Building with debug signature or unsigned."
+          fi
+
+      - name: Resolve APK Version
+        id: versioning
+        run: |
+          VERSION_NAME="${{ github.event.inputs.version_name }}"
+          VERSION_CODE_INPUT="${{ github.event.inputs.version_code }}"
+
+          if [ -n "$VERSION_CODE_INPUT" ]; then
+            VERSION_CODE="$VERSION_CODE_INPUT"
+          else
+            VERSION_CODE="${{ github.run_number }}"
+          fi
+
+          if ! [[ "$VERSION_CODE" =~ ^[0-9]+$ ]]; then
+            echo "version_code must be an integer" >&2
+            exit 1
+          fi
+
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "Using versionName=$VERSION_NAME and versionCode=$VERSION_CODE"
+
+      - name: Build APKs
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          APK_VERSION_NAME: ${{ steps.versioning.outputs.version_name }}
+          APK_VERSION_CODE: ${{ steps.versioning.outputs.version_code }}
+        run: |
+          if [ -f "my-upload-key.jks" ]; then
+            echo "Release keystore found! Building release APK..."
+            gradle assembleRelease
+          else
+            echo "No release keystore found, building debug APK as fallback..."
+            gradle assembleDebug
+            # Attempt release build just in case; if it errors out due to signing, continue
+            gradle assembleRelease || echo "Warning: Release build failed due to missing signing secrets. Proceeding with debug APK."
+          fi
+
+      - name: Find and Organize Generated APKs
+        run: |
+          mkdir -p release-apks
+          # Find any generated APKs and copy them to release-apks folder
+          find app/build/outputs/apk/ -name "*.apk" -exec cp {} release-apks/ \;
+          echo "Found APK files to upload:"
+          ls -l release-apks/
+
+      - name: Create GitHub Release (Auto Notes) and Upload APK
+        if: ${{ github.event.inputs.auto_release_notes == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version_name }}
+          name: "${{ github.event.inputs.release_title }} v${{ github.event.inputs.version_name }}"
+          generate_release_notes: true
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          files: |
+            release-apks/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release (Manual Notes) and Upload APK
+        if: ${{ github.event.inputs.auto_release_notes != 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version_name }}
+          name: "${{ github.event.inputs.release_title }} v${{ github.event.inputs.version_name }}"
+          body: ${{ github.event.inputs.release_notes != '' && github.event.inputs.release_notes || 'Manual build from GitHub Actions.' }}
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          files: |
+            release-apks/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

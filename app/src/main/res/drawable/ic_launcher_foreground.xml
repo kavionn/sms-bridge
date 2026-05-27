@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Translucent Frosted Glass Card Body (15% White opacity) with a thin card outline (30% White opacity) -->
+    <path
+        android:fillColor="#26FFFFFF"
+        android:strokeColor="#4DFFFFFF"
+        android:strokeWidth="1.2"
+        android:pathData="M 24,32 A 8,8 0 0,1 32,24 h 44 A 8,8 0 0,1 84,32 v 40 A 8,8 0 0,1 76,80 h -44 A 8,8 0 0,1 24,72 z" />
+
+    <!-- Technical pinstripe grids inside the frosted glass envelope card for added visual depth -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.8"
+        android:strokeAlpha="0.10"
+        android:fillColor="#00000000"
+        android:pathData="M 32,24 L 32,80 M 42,24 L 42,80 M 52,24 L 52,80 M 62,24 L 62,80 M 72,24 L 72,80" />
+
+    <!-- Envelope flap/line folds representing SMS Message -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeAlpha="0.90"
+        android:fillColor="#00000000"
+        android:pathData="M 26,28 L 54,49 L 82,28" />
+
+    <!-- Connection/pairing "bridge-link" symbol centered over the card -->
+    <!-- Represents the seamless bridging of SMS data -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 40,52 c -4.418,0 -8,-3.582 -8,-8 s 3.582,-8 8,-8 h 6 v 3 h -6 c -2.761,0 -5,2.239 -5,5 s 2.239,5 5,5 h 6 v 3 z" />
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 68,52 h -6 v -3 h 6 c 2.761,0 5,-2.239 5,-5 s -2.239,-5 -5,-5 h -6 v -3 h 6 c 4.418,0 8,3.582 8,8 s -3.582,8 -8,8 z" />
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 44,45.5 h 20 v 3 h -20 z" />
+
+    <!-- Dynamic incoming SMS wifi-like signals in bottom right indicating bridge gateway operations -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M 70,72 A 8,8 0 0,1 78,64" />
+        
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M 65,72 A 13,13 0 0,1 78,59" />
+
+    <!-- A tiny vibrant neon active status dot symbolizing ONLINE/ACTIVE gateway status -->
+    <path
+        android:fillColor="#00F5A0"
+        android:pathData="M 78,72 m -2.5,0 a 2.5,2.5 0 1,1 5,0 a 2.5,2.5 0 1,1 -5,0" />
+</vector>

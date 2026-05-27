@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Base Background Saturated Gradient (Elegant Navy-Indigo to Rich Emerald Forest) -->
+    <path
+        android:pathData="M 0,0 L 108,0 L 108,108 L 0,108 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:type="linear">
+                <item android:color="#4F46E5" android:offset="0.0" />
+                <item android:color="#0D9488" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Subtle Tech Grid Accent Circles to represent bridging connectivity -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 54,54 M 54,14 A 40,40 0 1,1 53.9,14"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeAlpha="0.10" />
+        
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 54,54 M 54,24 A 30,30 0 1,1 53.9,24"
+        android:strokeWidth="1"
+        android:strokeColor="#FFFFFF"
+        android:strokeAlpha="0.15" />
+
+    <!-- Ambient glowing light highlight from top-left -->
+    <path
+        android:pathData="M 30,30 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="-10"
+                android:startY="-10"
+                android:endX="70"
+                android:endY="70"
+                android:type="radial"
+                android:gradientRadius="40">
+                <item android:color="#4DFFFFFF" android:offset="0.0" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Ambient glowing light highlight from bottom-right (Emerald glow) -->
+    <path
+        android:pathData="M 80,80 m -30,0 a 30,30 0 1,1 60,0 a 30,30 0 1,1 -60,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="50"
+                android:startY="50"
+                android:endX="110"
+                android:endY="110"
+                android:type="radial"
+                android:gradientRadius="30">
+                <item android:color="#3334D399" android:offset="0.0" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>
